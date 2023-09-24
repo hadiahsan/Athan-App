@@ -4,19 +4,21 @@ from datetime import datetime, timedelta
 import pygame  # Used to play the sound
 
 def schedule_athan(timings, athan_file):
-    for prayer, time_str in timings.items():
-        # Convert prayer time to datetime object
-        time_obj = datetime.strptime(time_str, '%H:%M')
-        
-        # Calculate the delay in seconds
+    while True:  # Keep the script running
         now = datetime.now()
-        delay = (time_obj - now).total_seconds()
-        
-        if delay > 0:
-            print(f"Scheduling {prayer} at {time_obj}")
-            # Schedule the Athan
-            time.sleep(delay)
-            play_athan(athan_file)
+        for prayer, time_str in timings.items():
+            # Convert prayer time to datetime object
+            time_obj = datetime.strptime(time_str, '%H:%M')
+            
+            # If the current time is equal to or later than the prayer time, play the Athan
+            if now >= time_obj:
+                print(f"Playing Athan for {prayer} at {time_obj}")
+                play_athan(athan_file)
+                
+                # Update the timing for the next day
+                timings[prayer] = (time_obj + timedelta(days=1)).strftime('%H:%M')
+                
+        time.sleep(60)  # Check every minute
 
 def play_athan(athan_file):
     pygame.mixer.init()
