@@ -4,14 +4,16 @@ from datetime import datetime, timedelta
 import pygame  # Used to play the sound
 
 def schedule_athan(timings, athan_file):
-    while True:  # Keep the script running
+    while True:
         now = datetime.now()
         for prayer, time_str in timings.items():
-            # Convert prayer time to datetime object
             time_obj = datetime.strptime(time_str, '%H:%M')
             
-            # If the current time is equal to or later than the prayer time, play the Athan
-            if now >= time_obj:
+            # Calculate the difference between the current time and the prayer time
+            time_diff = now - time_obj
+            
+            # If the current time is within 5 minutes of the prayer time, play the Athan
+            if 0 <= time_diff.total_seconds() < 300:  # 300 seconds = 5 minutes
                 print(f"Playing Athan for {prayer} at {time_obj}")
                 play_athan(athan_file)
                 
